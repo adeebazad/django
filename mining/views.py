@@ -12,11 +12,14 @@ class FetchOrderView (APIView):
     def get(self, request):
         # order = MinedData.objects.filter(is_used=False).first()
         order = MinedData.objects.all()
+        print (order)
         if order:
             serializer = MinedDataSerializer(order, many=True)
             # order.is_used = False
             # order.save()
+
             return Response(serializer.data,status=status.HTTP_200_OK)
+            
         else:
             return Response({'message': 'No unused orders available'},status=status.HTTP_404_NOT_FOUND)
 

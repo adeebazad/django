@@ -6,6 +6,6 @@ from .views import predict_order_prices
 
 urlpatterns = [
                path('fetch-order/',FetchOrderView.as_view(),name='fetch_order'),
-               path('api/predict-order-prices/', predict_order_prices.as_view(), name='predict_order_prices'),
+               path('predict-order-prices/', predict_order_prices.as_view(), name='predict_order_prices'),
 
                ]
