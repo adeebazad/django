@@ -40,5 +40,5 @@ class predict_order_prices(APIView) :
         future_dates_str = [(pd.Timestamp.now()+timedelta(days=i)).strftime('%Y-%m-%d') for i in range(1,30)]
         predictions = list(zip(future_dates_str,predicted_prices))
 
-        # print (predicted_prices)
+        print (predicted_prices)
         return Response({'predictions':predictions})
