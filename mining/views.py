@@ -10,38 +10,45 @@ import pandas as pd
 
 class FetchOrderView (APIView):
     def get(self, request):
-        # order = MinedData.objects.filter(is_used=False).first()
-        order = MinedData.objects.all()
-        print (order)
-        if order:
-            serializer = MinedDataSerializer(order, many=True)
-            # order.is_used = False
-            # order.save()
+        try:
+            # order = MinedData.objects.filter(is_used=False).first()
+            order = MinedData.objects.all()
+            print (order)
+            if order:
+                serializer = MinedDataSerializer(order, many=True)
+                # order.is_used = False
+                # order.save()
 
-            return Response(serializer.data,status=status.HTTP_200_OK)
-            
-        else:
-            return Response({'message': 'No unused orders available'},status=status.HTTP_404_NOT_FOUND)
-
+                return Response(serializer.data,status=status.HTTP_200_OK)
+                
+            else:
+                return Response({'message': 'No unused orders available'},status=status.HTTP_404_NOT_FOUND)
+        except Exception as e :
+            print(e)
 
 class predict_order_prices(APIView) :
 
     def get(self,request):
-        orders = MinedData.objects.all().values('order_date', 'order_total')
-        df= pd.DataFrame(orders)
+        try:
+            orders = MinedData.objects.all().values('order_date', 'order_total')
+            df= pd.DataFrame(orders)
+            print("Fetched Orders:", orders)
+            df['order_date']= pd.to_datetime(df['order_date'].map(lambda date : date.toordinal()))
+            print("DataFrame:", df)
+            x= df[['order_date']]
+            y= df[['order_total']]
 
-        df['order_date']= pd.to_datetime(df['order_date'].map(lambda date : date.toordinal()))
-        x= df[['order_date']]
-        y= df[['order_total']]
+            model = LinearRegression()
+            model.fit(x,y)
 
-        model = LinearRegression()
-        model.fit(x,y)
+            future_dates = [(pd.Timestamp.now() + timedelta(days=i)).toordinal() for i in range (1,31)]
+            predicted_prices =  model.predict([[date] for date in future_dates])
 
-        future_dates = [(pd.Timestamp.now() + timedelta(days=i)).toordinal() for i in range (1,31)]
-        predicted_prices =  model.predict([[date] for date in future_dates])
+            future_dates_str = [(pd.Timestamp.now()+timedelta(days=i)).strftime('%Y-%m-%d') for i in range(1,30)]
+            predictions = list(zip(future_dates_str,predicted_prices))
 
-        future_dates_str = [(pd.Timestamp.now()+timedelta(days=i)).strftime('%Y-%m-%d') for i in range(1,30)]
-        predictions = list(zip(future_dates_str,predicted_prices))
-
-        print (predicted_prices)
-        return Response({'predictions':predictions})
+            print (predicted_prices)
+            return Response({'predictions':predictions})
+        except:
+            print("Error:", str(e))  # Debugging line
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
