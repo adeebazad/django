@@ -65,7 +65,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         incrementId = 81008258484
-        awb = 151769616583557
+        awb = 151769616583657
         for i in range(100):
             try:
                 awb += 1
