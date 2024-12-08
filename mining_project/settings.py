@@ -96,14 +96,14 @@ WSGI_APPLICATION = 'mining_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
+DATABASES =  {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'com-db',
-        'USER': 'admin',
-        'PASSWORD': 'Azad!123',
-        'HOST': 'com-db.cz0a0awos8f1.eu-north-1.rds.amazonaws.com',  # Or other database host
-        'PORT': '3306',    
+        'ENGINE': 'django.db.backends.oracle',  # Use the oracle backend
+        'NAME': '(description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-mumbai-1.oraclecloud.com))(connect_data=(service_name=g17250c9acce4ce_admin_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))',  # Leave empty if using a service name
+        'USER': 'ADMIN',  # Your Oracle DB username
+        'PASSWORD': 'RussAdeeb@123',  # Your Oracle DB password
+        # 'HOST': 'adb.ap-mumbai-1.oraclecloud.com',  # The host of your Oracle DB
+        # 'PORT': '1522',  # Default port for Oracle
     }
 }
 
